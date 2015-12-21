@@ -30,6 +30,7 @@ import static java.util.concurrent.TimeUnit.*;
  *  https://source.unsplash.com/
  *  http://stackoverflow.com/questions/10292792/getting-image-from-url-java
  *  http://stackoverflow.com/questions/4750372/can-i-change-my-windows-desktop-wallpaper-programmatically-in-java-groovy
+ *  http://stackoverflow.com/questions/238547/how-do-you-programmatically-download-a-webpage-in-java
  *  https://github.com/java-native-access/jna
  */
 
@@ -39,11 +40,16 @@ public class Main {
     private static final ScheduledExecutorService sch = Executors.newScheduledThreadPool(1);
 
     public static void main(String[] args) {
+
+        ImageGrabber.grabRandomRedditPhoto(ImageGrabber.redditCriteria.ALL);
+
+
+        /*
         final Runnable GrabMeFreshPaper = new Runnable() {
             @Override
             public void run() {
                 String filename = "C:\\Users\\intern\\Pictures\\" + LocalDate.now().toString() + ".jpg";
-                BufferedImage unsplash = grabUnsplashPhoto();
+                BufferedImage unsplash = ImageGrabber.grabUnsplashPhoto();
                 savePhoto(unsplash, filename);
                 setWallpaper(filename);
             }
@@ -57,9 +63,10 @@ public class Main {
         c.set(Calendar.MILLISECOND, 0);
         long delay = (c.getTimeInMillis()-System.currentTimeMillis());
 
-        int delayMinutes = (int) delay/60000;
+        int delayMinutes = (int) delay/60000; //TODO
 
-        sch.scheduleAtFixedRate(GrabMeFreshPaper, 0, 1440, MINUTES);
+        sch.scheduleAtFixedRate(GrabMeFreshPaper, 0, 1440, MINUTES); //TODO
+        */
     }
 
         public interface SPI extends StdCallLibrary {
@@ -104,42 +111,5 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static BufferedImage grabUnsplashPhoto() {
-        try {
-
-            String [] urlChoices = {
-                    "https://source.unsplash.com/category/buildings/1920x1080",
-                    "https://source.unsplash.com/category/nature/1920x1080"
-            };
-
-            String filename = "";
-
-            Random rand = new Random();
-            int i = rand.nextInt(urlChoices.length);
-            String urlString = urlChoices[i];
-            System.out.print(i);
-
-            URL url = new URL(urlString);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.getResponseCode();
-            urlString = con.getURL().toString();
-
-            urlString = urlString.replace("&w=1920", "");
-            urlString = urlString.replace("&h=1080", "");
-            urlString = urlString.replace("&crop=entropy", "");
-            urlString = urlString.replace("&fit=crop", "");
-
-            System.out.println(urlString);
-
-            url = new URL(urlString);
-
-            return ImageIO.read(url);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 }
